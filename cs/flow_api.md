@@ -30,8 +30,8 @@ fun simpleFlow(): Flow<Int> = flow {
 
 fun main() = runBlocking<Unit> { // 해당 thread를 대기시킴
     simpleFlow().map{ // Operator
-			it*it
-		}.collect { value -> println(value) } // suspend fun collect, collector
+   it*it
+  }.collect { value -> println(value) } // suspend fun collect, collector
 }
 
 ```
@@ -52,13 +52,13 @@ flowOf(1,2,3,4,5).collect{Log.d(TAG,it.toString())}
 (1..5).asFlow().collect{Log.d(TAG,it.toString()}
 
 flow{
-	(0..10).forEach{emit(it)}
+ (0..10).forEach{emit(it)}
 }.collect{Log.d(TAG,it.toString()}
 
 channelFlow{
-	(0..10).forEach{
-		send(it)
-	}
+ (0..10).forEach{
+  send(it)
+ }
 }.collect{Log.d(TAG,it.toString()}
 ```
 
@@ -93,7 +93,7 @@ CoroutineScope(Dispatchers.Main).launch {
 
 **zip 연산자** : 지정된 함수를 통하여 두 flow 의 emit 값을 결합하고, 이를 기반으로 단일 항복을 emit
 
-![Untitled](Flow%20API%203148fbfb4aec48eba337da08a2a21a3c/Untitled.png)
+![Zip](../resources/image/flow_api_zip.png)
 
 ```kotlin
 val flowOne = flowOf(1, 2, 3)
@@ -106,7 +106,7 @@ flowOne.zip(flowTwo) { intValue, stringValue ->
 }
 ```
 
-출력값 1A 2B 3C 
+출력값 1A 2B 3C
 
 두 flow 작업은 **병렬로 실행**됨에 유의하자
 
@@ -118,9 +118,9 @@ flowOne.zip(flowTwo) { intValue, stringValue ->
 
 ```kotlin
 .retryWhen { cause, attempt ->
-	//cause : Throwable 오류 및 예외를 담는다
-	// attempt : Long  0에서 시작하는 현재 재시도 횟수
-		if (cause is IOException && attempt < 3) {
+ //cause : Throwable 오류 및 예외를 담는다
+ // attempt : Long  0에서 시작하는 현재 재시도 횟수
+  if (cause is IOException && attempt < 3) {
         delay(2000)
         return@retryWhen true
     } else {

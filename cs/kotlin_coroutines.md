@@ -19,7 +19,7 @@ Co(협력) + Routines(함수) → 함수의 협력을 통해 동작
 
 중첩된 작업이 많아질수록 ‘콜백 지옥’이라는 코드 중첩이 생성됨
 
-**RxJava** (리액티브 프로그래밍:환경이 변하면 동작하는 프로그래밍 을 돕는 라이브러리) 사용 → 
+**RxJava** (리액티브 프로그래밍:환경이 변하면 동작하는 프로그래밍 을 돕는 라이브러리) 사용 →
 
 일종의 옵저버 패턴으로, 연계 작업에 데이터를 Push 하며 함수형 프로그래밍(side effect 가 없는 으로 작업을 처리 (데드락과 동기화 문제 등 경쟁 조건 문제 해결)
 
@@ -78,7 +78,7 @@ val result = asyncCoroutine.await()
 
 **withContext**
 
-Async 와 Launch 가 새로운 코루틴을 생성하는데에 비해 
+Async 와 Launch 가 새로운 코루틴을 생성하는데에 비해
 
 withContext 는 Dispatcher를 지정하여 진행중인 코루틴의 context 를 전환하는 역할을 한다.
 
@@ -112,7 +112,7 @@ GlobalScope.launch {
 
 코루틴 작업이 존재해야하는 영역을 의미한다.
 
-만약 Activity와 함께 코루틴 작업이 종료되어야 한다면, Activity 내에서 
+만약 Activity와 함께 코루틴 작업이 종료되어야 한다면, Activity 내에서
 
 lifecycleScope.launch{ } 를 통해 코루틴 작업을 수행하면 된다.
 
@@ -128,12 +128,12 @@ try - catch 블럭 사용하기 : 예외가 발생하면 e 에 따라 catch 구�
 // Launch 사용시
 
 someScope.launch(Dispatchers.Main){
-	try {
-	    suspendFoo() // IO Dispatcher를 사용하는 작업
-	} catch (e: Exception) {
-			//ex
-			Log.d(TAG,"$exception handled!")
-	} 
+ try {
+     suspendFoo() // IO Dispatcher를 사용하는 작업
+ } catch (e: Exception) {
+   //ex
+   Log.d(TAG,"$exception handled!")
+ } 
 }
 
 // Async 사용시
@@ -161,8 +161,6 @@ someScope.launch(Dispatchers.Main + handler) {
 ```
 
 만약 launch 구문을 통해 두 네트워크 데이터 반환 작업 a() 와 b() 를 병렬적으로 처리한다고 했을 때
-
- 
 
 ```kotlin
 launch {
