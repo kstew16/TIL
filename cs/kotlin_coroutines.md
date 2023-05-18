@@ -76,6 +76,8 @@ val result = asyncCoroutine.await()
 
 를 통해 얻을 수 있다.
 
+*runBlocking은 수행 결과 나올때까지 대기하는 코루틴 빌더이다. 여기서 설명하는 둘은 blocking이 없다.*
+
 **withContext**
 
 Async 와 Launch 가 새로운 코루틴을 생성하는데에 비해
@@ -117,6 +119,8 @@ GlobalScope.launch {
 lifecycleScope.launch{ } 를 통해 코루틴 작업을 수행하면 된다.
 
 viewModelScope.launch{} 도 비슷하게 작동한다. 즉 코루틴 작업이 유효한 lifeCycle을 바인딩한다고 볼 수 있겠다.
+
+globalScope는 어떠한 job에도 바인딩되지 않는다. 애플리케이션과 함께 종료되나, 조기 취소되지 않는다. 여러 잠재 문제가 많기 떄문에 항상 로그를 남기는 등 필수적이지 않을 땐 사용을 금하자.
 
 ## 예외처리
 
