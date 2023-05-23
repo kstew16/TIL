@@ -1,0 +1,11 @@
+# 직렬화 (feat,Serializable)
+
+직렬화는 데이터 구조나 객체 상태를 저장할 수 있게 Byte Array 형태로 바꾸는 것을 의미한다
+Java의 interface로 제공되는 Serializable(인터페이스)과 Android SDK 의 Parcelable로 구현이 가능한데,
+Serializable의 경우 reflection 처리 과정에서 여러 객체가 생성되어 GC의 타겟이 되기 쉽다. 이것은 성능 저하 문제로 이어질 수 있다
+Serializable을 구현하는 객체는 그 데이터도 모두 직렬화 가능해야 한다. @Transient 어노테이션으로 직렬화에서 무시할 수도 있다.
+직렬화 버전 식별을 위해서 serialVersionUID가 사용되는데, 이것은 직접 private const val 형태의 Long 자료형으로 개발자가 관리해 주는 것이 좋다.
+
+또 다른 interface Parcelable은 개발자가 직접 직렬화 처리방법을 명시하기 때문에 Reflection 발생이 없으나, 개발 난이도가 올라간다.
+현재 코틀린 플러그인 kotlin-parcelize 를 통해 @Parcelize 어노테이션을 추가한 클래스는 자동으로 구현이 생성되고, write와 create를 오버라이딩하게 된다.
+SparceArray,Exception이나 컬렉션의 구현,nullable등 다양한 객체가 자동 구현을 지원한다 

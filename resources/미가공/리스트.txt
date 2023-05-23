@@ -1,0 +1,12 @@
+# RecyclerView (JetPack)
+
+대량의 데이터셋을 효율적으로 스크롤 가능한 리스트로 볼 수 있게 도와주는 View 요소
+스크롤되어 화면에서 벗어난 뷰(목록)의 데이터를 갱신하여 새로 보여질 데이터를 담고 화면으로 (벗어난 방향의 반대 방향에서) 돌아오게 한다.
+이렇게 되면 ListView가 매번 뷰 객체를 삭제하고 재생성하는것보다 훨씬 리소스를 절약할 수 있게 된다.
+목록의 각 요소는 ViewHolder 객체로 정의된다.
+RecyclerView가 생성되면 onCreateViewHoler()메소드를 호출하여 (CardView등을 통해 작성된) 레이아웃을 구워(Inflate) 뷰를 홀더의 init에 전달하고,
+뷰 홀더는 이 뷰를 받아 findViewById 등을 통하여 레이아웃 내 요소와 결합된다.
+뷰 홀더에 데이터를 바인딩할 때 Adapter의 onBindViewHolder 메소드를 호출하는데,이때 뷰홀더와 데이터가 바인딩되는 것이다.
+RecyclerView는 LayoutManager를 통해서 가로,세로 또는 다양한 형태로 목록이 표시되도록 설정할 수도 있다.
+
+*tip 코틀린에서 LazyColumn 과 LazyRow가 비슷한 일을 수행한다. 내부에 item{Text()}컴포저블을 배치하거나, items(itemList){item->Text(){}} 이렇게 사용

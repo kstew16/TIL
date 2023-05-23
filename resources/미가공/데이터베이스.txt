@@ -1,0 +1,38 @@
+# Database
+
+## SQLite
+
+안드로이드/iOS에 기본적으로 임베디드된 DBMS (Database Management System)으로 SQL의 경량화 버전이다.
+
+## Room DB (JetPack)
+
+SQLite를 추상화하고 객체지향 데이터베이스를 제공하는 라이브러리로
+- SQL 쿼리의 컴파일 타임 검증
+- SQLite에 비해 적은 상용구
+- 간소화된 Migration 과정
+의 장점을 가집니다.
+안드로이드에서는 기본적으로 Room DB를 데이터베이스로 채택하기를 권장하고 있으며
+데이터 베이스 생성 비용이 크므로, 주로 싱글톤 객체로 운영합니다. 
+- companion object 생성, thread-safe를 위해 @Synchronized fun getInstance(context:Context)
+
+### 구성 요소
+
+- Room Database : 데이터베이스를 보유하고, 앱의 영구 데이터로 연결되는 액세스 포인트
+- Entity : 앱 데이터베이스의 테이블, @Entity(tableName = "이름") 어노테이션을 포함한 data class로 나타낸다
+- DAO(Data Access Object) : 쿼리, 업데이트, 삽입, 삭제하는데 사용하는 메서드를 제공하는 **인터페이스**
+
+
+#### tip 
+- 데이터베이스의 형태 : 
+```Kotlin
+@Database(entities = [엔티티명::class], version = n)
+abstract class MyDatabass: RommDatabase(){
+abstract fun myDao():MyDao
+}
+```
+- 엔티티의 Primary key 는 key 항목 앞에 @PrimaryKey 어노테이션을 붙이거나, {
+    @PrimaryKey(autoGenerate = true) var id: Int = 0
+}를 data 클래스에 추가하여 사용할 수 있다.
+- DAO는 @Dao 어노테이션이 붙은 interface를 정의하여 사용한다. 
+인터페이스 내에 @Insert,@Update,@Delete,@Query("쿼리문")을 어노테이션으로 가진 메소드를 정의하여 사용
+

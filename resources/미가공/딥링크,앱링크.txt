@@ -1,0 +1,36 @@
+# 링크
+
+링크 : 사용자가 원하는 콘텐츠에 도달할 수 있도록 연결하는 것
+
+## 딥 링크
+
+사용자를 **특정 콘텐츠**(ex 액티비티)로 바로 연결하는 URL, `Scheme://Path`의 형태가 일반적 (Scheme은 Manifest에서 지정)
+개발자가 인텐트 필터를 추가한 상태에서 필터에 해당되는 인텐트를 수신하면 적절한 액티비티로 연결된다.
+
+그러나 동일한 인텐트를 처리할 수 있는 경우 링크가 원하는 앱으로 바로 연결되지 못한다는 문제점을 가지고 있었다.
+(ex scheme:http, scheme:https, pathPattern=".*" 이 등록되어 있는 여러 브라우저 앱들은 모든 네트워크 경로에 반응)
+
+Intent URL Scheme : http,https를 포함한 custom scheme
+Intent Action : 아무 액션이나 가능
+Intent Category : 아무 카테고리나 가능
+링크 인증 : 없음
+호환 버전 : 모든 버전
+작동 -> 링크를 눌렀을 때 사용자가 어떤 앱을 실행할지 다이얼 로그가 나타남
+
+deferred deep link : 딥 링크를 클릭할 때 앱이 이미 설치되지 않은 경우 설치 페이지로 연결 (커스텀 스킴 불가)
+
+*Tip 다이나믹 링크는 구글 파이어베이스에서 제공하는 딥 링크의 일종으로, deffered link의 기능 + 커스텀 스킴을 지원한다
+
+## 앱 링크
+
+앱이 웹 URL과 연결되도록 도와, 웹에서 링크를 통해 앱으로 연결할 수 있게 한다.
+Scheme 값이 https,http로 고정되어 링크 자체가 하나의 도메인을 나타내게 되었다.
+
+Intent URL Scheme : http,https
+Intent Action : android.intent.action.VIEW 필요
+Intent Category : android.intent.category.BROWSABLE, android.intent.category.DEFAULT 2가지가 필요
+링크 인증 : HTTPS 웹사이트 내에서 제공된 Digital Asset Link 파일이 필요
+ - Intent filter 에 `autoVerify=true`속성을 추가하면 링크 내 페이지에서 데이터 에셋 파일을 검색한다
+ - 데이터 에셋 파일은 JSON 파일로, 생성된 App Link 와 앱의 패키지가 저장되어 있다
+호환 버전 : 안드로이드 6.0 이상
+작동 -> 링크 클릭시 앱이 구동

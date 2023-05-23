@@ -1,0 +1,10 @@
+# Bundle
+
+번들은 Intent,Message(Looper&Handler참조) 등에서 사용되는 `데이터 Map`이다 (내부구현 ArrayMap<>)
+기본타입 Int 등은 물론이고 Serializable, Parcelable을 전달할 수 있다.
+
+`intent.putExtra("key","value")` 형식으로 전달하더라도 결국 bundle 객체를 생성해 전달한 것과 같게 실행된다.
+
+Fragment 등에서는 불일치 문제 등으로 인해서 Navigation을 통한 SafeArgs를 지원한다.
+프래그먼트 파일에 Attributes 패널의 add 속에서 Add Argument Link 로 기본값을 입력하면 XML에 자동으로 추가된다
+기본타입과 리소스 참조(@resourceType/Name), Parcelable과 Serializable, Enum까지 지원한다.

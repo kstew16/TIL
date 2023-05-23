@@ -1,0 +1,78 @@
+# 코틀린
+
+Data class : hashCode,equal,toString,componentN,copy(일부 속성을 재정의 할 수 있음)를 지원하는 코틀린의 클래스, 구조 분해 사용 가능!
+구조 분해는 내부적으로는 componentN 함수를 선언하여 순서대로 프로퍼티를 반환하는 식으로 구성되어 있음.
+const val : 런타임에서 값이 정해지는 val과는 달리 컴파일타임에 미리 데이터가 정해지는 완전한 불변성을 가지고 있다
+클래스 상속시 MyClass() 지만 인터페이스는 MyInterface로 괄호가 안 붙는다
+생성자에서 val,var을 통해 생성하면 자동으로 프로퍼티로 사용하는 게터/세터(var)를 지원한다(자바에서는 생성자 매개변수로 받아 프로퍼티에 저장하고,게터세터까지 만들어야 했지.) -> 커스텀도 가능!
+
+```Kotlin
+//ㅋㅋㅋㅋㅋㅋ
+class MyClass(name:String){
+    var myName = name
+    set(name){ println("my name donnot changes! no $name") }
+    fun sayMyName(){ println(myName)}
+}
+
+    val c = MyClass("BigBoy")
+    c.sayMyName()
+    c.myName="BABO"
+    c.sayMyName()
+```
+` BigBoy
+my name donnot changes! no BABO
+BigBoy`
+
+?: -> 널이면 콜론 뒤에 있는 거 리턴
+safe cast : as? 를 사용하면 타입 변환 불가일시 null을 리턴
+lateinit : 초기화 하기 전에는 null 이 들어있는 그냥 나중에 초기화하는 친구, -> 원시타입은 NotNull이므로 원시타입은 lateinit 불가능
+lateinit 에 Primitive(Int등) 사용할 수 없는 이유 : lateInit은 nullable이라서!
+by : 위임 패턴 - 객체/함수/프로퍼티등의 구현을 다른 객체에게 위임
+by lazy{} : val 값에 지정되며, 초기화시에 한 번만 실행되는 Unit을 실행하고는 나중에는 읽기전용으로 get만 뱉는다 : 한 번만 실행하는거 스레드에서도 안전!
+object MyClass{} : 싱글톤 패턴의 쉬운 구현! Thread safe 함, 근데 by lazy로 생성해줘야지, 아니면 쓰이기 전에 프로세스 생성 때 생성됨
+ - 생성시에 파라미터를 전달하려면 companion object를 사용하라!, 이때 Thread safe를 통해서 getInstance 내 세터에 synchronized 사용 가능
+```Kotlin
+class DBHandler private constructor(context: Context) {
+    companion object {
+        @Volatile
+        private var instance: DBHandler? = null
+
+        fun getInstance(context: Context) =
+            instance ?: synchronized(DBHandler::class.java) {
+                instance ?: DBHandler(context).also {
+                    instance = it
+                }
+            }
+    }
+}
+```
+companion object : 자바의 static과 비슷하나, static 키워드는 클래스 멤버를 지정하기 위해 사용했다. 인스턴스 생성 없이도 바로 사용할 수 있는(클래스 적재 시에 인스턴스가 생성되어) 멤버들이었다.
+그러나 Myclass.memberInCompanion은 Companion에 접근하는 것을 생략했을 뿐, 하나의 엄연한 객체이다. 또 **클래스 이름만**으로도 참조 접근이 가능하다
+```Kotlin
+class MyClass2{companion object{val prop="속성"}}
+val comp2 = MyClass2
+println(comp2.prop) // 속성
+```
+Static 은 @JvmStatic을 붙여 static처럼 사용할 수 있다.
+@JvmName : 다형성 코드를 작성할 때 List<T> 의 T가 달라도 다형성이 적용되지 않는다.(제네릭이 컴파일타임에 구분되지 앟음)
+이 때는 @JvmName("name")어노테이션으로 다른 이름을 붙이면 에러가 나지 않는다
+@JvmField : 필드멤버에 게터/세터를 추가하지 않음
+
+vararg : variable arguments - 여러개의 인자를 전달할 때, Array화하여 전달할 수 있다(자료형은 개별 데이터를 따라감)
+ex) fun max(vararg numbers:Int){return numbers.maxOf{it} }// 의미는 없는 함수지만..
+스프레드 연산자*: 반대로 varargs로 선언된 함수에 배열을 전달할때는 *anyArray 로 전달하면 varargs화 된다 
+단일표현함수 : fun foo(a:Int):Int = a*2 자연리턴
+
+코틀린에서 모든 클래스/메소드는 final(상속불가)로 선언되므로, 상속이 필요할 경우 open 변경자가 필요하다.
+abstract class 내의 함수에 open을 붙이면 override 하지 않아도 되는 메소드를 생성할 수 도 있다!
+
+가시성 public(default), internal(한 번에 컴파일되는 프로젝트 등의 단위), protected(하위 클래스까지만,최상위 선언 불가), private(클래스 내-파일 내)
+
+Any 클래스 : 다른 클래스를 명시적으로 상속받지 않은 모든 클래스가 암묵적으로 상속받는 클래스이다.
+equals() (==) ,hashcode(),toString()을 지원함
+
+Unit : 아무것도 반환하지 않는다. 자바의 void -> Wrapped되면 Void
+Nothing : 의도적인 예외 발생, ex Todo()
+String : 불변이다. 더하기 하면 새로운 String이 생성되고 원래건 나중에 GC당함
+가변자들 - StringBuffer : thread-safe / StringBuilder : 단일스레드 성능up
+제네릭 <T> 앞에 out을 붙이면 공변성이 성립한다!(상위 클래스라면 T로 캐스팅이 가능!) in을 붙이면 반공병성(contra varience 상하구조 반대)

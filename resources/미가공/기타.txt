@@ -1,0 +1,52 @@
+# 미분류
+
+## Configuration Change
+화면 회전, 앱 디스플레이 크기(화면 분할 등) 글꼴, 언어, Light/Dark 모드, 키보드 사용 가능 여부 등에 의해 액티비티는 재생성된다.
+이 때 새 액티비티는 기존 액티비티와 다른 인스턴스이므로, AAC ViewModel/onSavedInstanceState-onRestoreInstanceState로 대응 가능하다
+
+## ::
+리플렉션 : 코드를 작성하는 시점에 런타임시 컴파일될 코드를 참조하기 위해 사용할 수 있다.
+MainActivityViewModel::class.java 라고 하면 class.java 코드 내의 MainActivityViewModel을 참조할 수 있다.
+lateinit으로 viewModel 선언했는데 어딨는지 모르니까....
+코틀린에서 ::class는 KClass를 리턴하고, ::class.java 는 Class 를 리턴한다. 코틀린에서 직접 정의한 게 아니면 자바까지!
+
+## Navigation(JetPack)
+
+1Activity - N Fragment 구조로 UI를 관리하게 됨.
+사용자가 앱 내 여러 콘텐츠를 탐색하고, 진입/탈출 하는 행위를 구현하는 것을 도와줌
+Fragment 간 데이터 공유를 Safe Args를 통해 안전하게 지원하며,스택 관리 등 개발 여건을 향상시켜줌
+but 모든 애플리케이션 구조에 적합하지 않고 구현해야 할 것이 많음 ㅜㅜ
+
+몇 가지 원칙을 준수하여 사용자에게 더 안정적인 사용 경험을 제공한다
+- 시작 위치 고정
+- Navigation state는 destination의 stack으로 표현됨
+- back 과 up(앱 상단 뒤로가기)버튼의 역할 통합, 그러나 up 버튼은 앱 종료에 사용되지 않음
+- 딥 링크를 통해 하위 구성요소로 진입하면 백스택이 제거되고 딥 링크 백스택이 생성
+
+Navigation 구성 요소
+
+Navigation Graph : 관련 정보를 root로 포함하는 XML 리소스, 앱 내 컨텐츠 영역과 경로가 포함됨
+NavHost :  그래프의 목적지를 표시하는 빈 컨테이너
+NavController : 앱 navigation을 관리하는 개체, navHost 내 Nestination을 변경한다
+
+## Compose
+확장성이 좋아요... 함수로 추가하는거 편하더라
+LazyColumn 얘 Recycler에 들어가는 Adapter같은거 안 해도 돼서 좋음
+
+## VM 선정
+JVM보다 저작권 문제에서 자유롭고 빠른(JVM은 스택 기반 모델,DVM은 레지스터 기반 모델) DVM 선정 => ART의 퍼포먼스 개선
+
+
+액티비티는 첫 화면이 실행되기까지의 시간과, 이후 다른 액티비티 등등이 로드되기까지의 총 시간을 Logcat으로 알려줌 (TTFD 전체 콘텐츠 로드까지의 시간이 아니다)
+reportFullyDrawn()을 수동으로 호출해서 지연 항목 로드까지의 시간도 기록할 수 있다.
+```Text
+ActivityManager: Displayed com.android.myexample/.StartupTiming: +3s534ms (total +1m22s643ms)
+system_process I/ActivityManager: Fully drawn {package}/.MainActivity: +1s54ms
+```
+
+## 빌드 툴
+프로젝트를 빌드하는 도구이다. 안드로이드는 Android Gradle을 사용하고 있는데 Gradle 5.0부터
+그래들의 Kotlin 식 작성법인 Kotlin-DSL(Domain-specific language)의 등장으로 코틀린과 보다 유사한 문법으로 표현한 gradle.kts 파일을 사용하게 되었다.
+
+## 프로세스
+선점형 : CPU 강탈형 / 비선점형 : 강탈불가형

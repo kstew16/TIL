@@ -1,0 +1,33 @@
+# 데이터를 앱에 저장하는 방법
+
+파일 I/O (내/외부 저장소) : 접급 권한을 획득이 필요함
+관계형 데이터 베이스 : 데이터 베이스 항목을 참조, 간단한 데이터 저장을 목적으로는 적합하지 않음
+
+## SharedPreferences
+
+Key,Value 형태로 사용할 수 있는 데이터 방식
+String,Int,Float,Boolean 등과 같은 원시 데이터의 저장을 지원하며
+내부적으로는 XML 파일로 저장됨
+
+EncryptedSharedPreference (JetPack)
+빌더 패턴을 사용하여 보안 성능이 강화된 키/밸류 데이터 저장을 지원한다.
+키 세트 자체는 SharedPreference에 저장되나, 암호화 키가 `안드로이드 키 저장소 시스템`을 이용한다.
+AES256 (Advanced Encryption Standard)는 데이터 암호화 표준이다.
+ - 암호화와 복호화에 같은 키를 사용하며, 암호와 키의 길이가 256비트인 암호화 방식이다.
+
+단점 : UI 스레드에서 작동하는 방식으로 구현되어 ANR 현상을 일으킬 수 있고, Type safety가 보장되지 않음
+
+## DataStore (JetPack)
+
+프로토콜 버퍼(구글의 언어/플랫폼 중립적 직렬화 매커니즘)를 사용할 수 있는 키/값 형식 데이터 저장소
+Kotlin Corouintes, Flow를 지원하며, Dispatchers.IO를 강제하는 비동기적 방식을 사용한다.
+
+Preference DataStore : 키를 사용하여 데이터를 저장하고 접근 : Type safety 제공하지 않음
+Proto DataStore : 데이터에 따라 다른 유형의 인스턴스로 데이터 저장, Type safety 보장
+
+
+### 주의사항
+한 프로세스에는 한 개의 DataStore 인스턴스만이 존재해야 하며 (IllegalStateException!!이 발생할 수 있다)
+DataStore의 제네릭 타입은 불변이어야 한다 (제네릭 : 코드에서 T, 어떤 타입이 될 지 모르는 일반화된 타입)
+ - 잠재적인 문제 발생을 방지하기 위해서 DataStore 내에는 불변 데이터만 저장하며, 수정시 새 인스턴스를 만들어 저장하기
+여러 프로세스에서 DataStore을 사용하려면 MultiProcessDataStore만을 사용하여라

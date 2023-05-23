@@ -1,0 +1,40 @@
+# UI 라이브러리
+
+## 뷰 바인딩
+뷰 바인딩 : build.gradle에서 viewBinding{enabled=true} 해 주고 MyActivity 면 ActivityMyBinding 자료형의 binding을 lateinit해서 binding.root를 setContentView 해 주면 됨
+Nullsafe : 뷰 바인딩은 뷰의 직접 참조를 생성하여 @Nullable 노테이션과 유효하지 않은 뷰 ID에 의한 nullPointerException으로부터 안전함
+TypeSafe : 각 바인딩 클래스의 필드 유형이 XML 파일에서 참조하는 뷰와 일치하여 변환 예외가 발생하지 않음
+
+## 데이터 바인딩 (JetPack)
+
+선언적 형식으로(코드에서) 레이아웃의 UI 요소를 데이터 소스와 결합할 수 있다(ex viewModel 의 데이터와 TextView의 text끼리!)
+xml에서 <TextView android text = "@{viewmodel.userName}" /> 이런식으로 사용 가능
+메모리 누수를 방지하고(뷰의 수명 주기에따른 메모리 관리 지원)
+
+
+### 뷰 바인딩 VS 데이터 바인딩
+
+뷰 바인딩은 XML에 태그하는 등의 부가 작업이 없어 사용이 편리하고 Annotation이 필요 없어 컴파일 시간이 빠르다
+
+그러나...
+데이터 바인딩이 지원하는 양방향 바인딩(뷰에서 데이터 변경)이 불가능하기 때문에 그 용도에 따라 사용이 달라져야 한다.
+또 뷰 바인딩은 레이아웃 변수나 표현식에 접근할 수 없기 때문에 dynamic UI에 사용될 수 없다
+
+## ViewModel (JetPack)
+
+화면 state 와 관련 비즈니스 로직을 담을 수 있는 holder이다.
+UI에게 state를 노출하고 관련 로직은 캡슐화의 이점을 취할 수 있다.
+액티비티와 LifeCycle이 분리되어 구성 변화에도 데이터를 유지한다.
+이벤트에 따라 비즈니스 로직을 적용하거나, 다른 계층 구조(네트워크 등)에 위임할 수 있다.
+모듈 수준의 gradle에 ${compositionName}=ktx 추가하면 by viewModels()로 위임 가능 (Fragment에선 by activityViewModels())
+val model: MyViewModel = ViewModelProvider(this@MyActivity).get(MyViewModel::class.java) 이것도 가능
+ViewModelStoreOwner 는 ViewModelStore를 관리하는 scope 인터페이스로, 액티비티,프래그먼트 등이 구현하고 있다==액티비티를 인자로 넘길 수 있는 이유
+이것을 구현하면 ViewModelStore를 유지하고, scope가 destroy도ㅚㄹ 때 ViewModelStore.clear()를 호출하는 내용을 구현해야 한다.
+뷰모델은 이 ViewModelStoreOwner가 사라졌다고 판단할 때 메모리에서 제거되는데 그 상황은 아래와 같다
+
+액티비티 : Finished 때 제거
+Fragment : Detach 때 제거
+In the case of a Navigation entry, when it's removed from the back stack.
+
+사용자가 명시적으로 액티비티를 종료하면(Back,최근앱 종료,상위 액티비티로 이동,강제종료,finish() 등) 뷰모델은 꺼져도 되지만
+시스템이 메모리 부족 등으로 인해서 액티비티를 종료하면 뷰모델도 같이 죽는다 -> SavedStateHandle 사용해야 함

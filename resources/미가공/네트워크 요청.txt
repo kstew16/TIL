@@ -1,0 +1,56 @@
+HTTP : HyperText Transfer Protocol 웹 문서를 주고받기 위한 프로토콜
+HTTPS : Transport Layer(TCP,UDP) 이후에 SSL(Secure socket layer) 보안 프로토콜을 수행
+OSI 7 : PDNT SPA -> NITA 4 TCP/IP
+
+Connectionless : 작업이 중지되면 연결도 끊는다
+Pros 더 많은 작업요구에 대응 가능 Cons Tcp/IP에서의 3way handshake 등에 오버헤드
+연결 시작 - 3way shake : Syn seq 맞추자 Syn  여따 맞춰 ㅇㅇ ACK 지금부터 시작할게요
+연결 해제 - 4way shake : Fin(C) ACK(S) FIN(S) ACK(C)
+Stateless : 클라이언트를 식별하지 않는다.
+Pros 서버가 클라이언트 정보를 갖고 있지 않다면 여러 서버(로드밸런싱!)가 요청에 대응 가능 Cons 상태를 유지해야 할 때 다른 도움이 필요
+쿠키 : 클라이언트측에서 저장해야 하는 정보를 set-cookie 헤더에 담아 전송 key-value
+세션 : 클라이언트를 식별하는 유일 ID를 이른다. 쿠키에 담겨서 오가며 인증 상태 등을 처리하는데 사용
+
+HTTP 구조
+
+Start Line : 메소드 정보, 요청 URL 등 핵심 정보 응답일 경우 상태 코드 및 메시지
+Header : 요청과 응답에 쓰이는 부가적인 정보 (보통 클라이언트 정보)
+Body : HTTP를 통해 전송하고자 하는 데이터
+
+Rest : REpresentational State Transfer
+URI와 HTTP Method 자원에 CRUD(Create,Read,Update,Delete)명령을 적용
+URI와 HTTP Method, Representation : 행위의 내용을 담고 있다.
+HTTP의 표준 프로토콜을 따르는 모든 플랫폼에서 명시적인 네트워크 작업을 수행할 수 있다.
+
+GET : 자원 받기 (자원 변경 X)
+POST : 새로운 자원 추가
+PUT : 존재하는 자원의 완전한 변경 요구
+PATCH : 자원의 데이터를 부분적으로 업데이트하기 위해 사용
+DELETE : 자원의 삭제
+
+상태 코드
+1xx(정보) : 요청을 받았으며 프로세스를 진행
+2xx(성공) : 요청을 성공적으로 받고 진행함
+ - 200 OK 요청 수행
+ - 201 Created 요청을 수행하여 새로운 자원 생성
+3xx(리다이렉션) : 요청 완료를 위해 추가적인 조치가 필요하다
+4xx(클라이언트 오류) : 문법이 잘못되었거나 처리할 수 없음
+ - 400 Bad Request 이해할 수 없음
+ - 401 Unauthorized 미승인 - 권한 부여부터 받고 진행할 것
+ - 403 Forbidden 금지, 권한으로는 접근 불가
+ - 404 Not found 그런 거 없음
+5xx(서버 오류) : 유효한 요청 수행 실패
+ - 503 Service Unavailable : 유지보수/과부화 등으로 서비스 제공 불가
+
+소켓 통신 : IP주소와 포트넘버를 통해 프로세스를 연결하는 통신 방식, 양방향 통신이 가능하다.
+
+브라우저에 검색 : URL 해석 -> DNS 에 IP주소 확인 -> TCP 연결 -> HTTP 에 Request -> HTTP Response -> 콘텐트 보여주기
+
+인증(Authentication) : 유저 확인 / 인가(Authorization) : 권한 확인 작업
+
+OAuth : 클라이언트에 접근 권한을 위임하게 도와주는 프로토콜(우리는 클라이언트 서비스로 Google 로그인등을 제공) HTTPS가 필수이며 
+로그인을 통해 받은 Auth 코드를 서버에서 토큰으로 교환해주면 토큰가지고 인가받는 방식, 코드를 클라이언트에게 노출되지 않고 사용자 동의 페이지로의 리다이렉션에 사용된다. 여기서 토큰을 받게 됨
+이 토큰을 가지고 구글 등 서버의 서비스를 대신 이용할 수 있게 되는 것, 클라이언트는 ID/PW 따위의 중요 정보를 가지고 있을 필요가 없게 되었다.
+
+JWT(Json Web Token) : URL로 이용할 수 있는 문자만 구성된 JSON 인증 토큰, 헤더에 포함하면 인증으로 사용할 수 있음. 공개키/비밀키가 따로 존재
+header.payload.signatur 의 형태로 구성되어있으며, 헤더는 검증방식, 페이로드에는 서버와 주고받기로 한 데이터, 서명에는 헤더와 페이로드를 합친 문자열의 암호화 서명값이 들어간다 - 위변조 막을 수 있음

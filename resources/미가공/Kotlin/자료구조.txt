@@ -1,0 +1,97 @@
+# 자료구조
+
+ADT : Abstract data structure - 자료구조의 동작을 정의하는 추상적인 자료형
+이것을 구현한 것이 Data Structure, 자료구조이다.
+
+## Array
+
+아주 기본적인 자료구조이다. 메모리에서 Type에 따른 공간을 연속적으로 할당받아 공간 지역성의 이점을 취한다
+
+## ArrayList
+
+크기가 변하는 동적 배열을 제공한다. capacity가 가득 찼을 때는 capacity가 1.5배가 된다
+데이터 요소 접근 O(1), 특정위치 삽입/삭제 O(n), 삽입 O(1) capacity 확장의 경우 복사 필요로 인해 O(n)
+ - MutableList는 ArrayList로 생성된다 (특별히 ArrayList를 원하는 경우에 ArrayList로 선언)
+
+## LinkedList (나도 리스트라구 ㅜㅜ)
+
+주소와 데이터를 함께 보관하는 형태의 자료구조로, 삭제와 추가가 간단하나 모든 자료가 파편화되어 접근이 느리고 용량이 크다.
+그러나 파편화는 메모리가 많이 부족한 경우 메모리 압박을 줄일 수 있다.(GC는 Compaction을 하느라 힘들어지니 양날의 검..)
+중간 요소를 삭제/삽입해야 할 때 좋은 퍼포먼스를 보인다.
+요소 접근 O(n), 삽입/삭제 O(1)
+
+## Vector
+
+Synchronized ArrayList 
+ - 자바에서는 매번 lock/unlock이 포함된 get/set으로 인해 비효율적, Collections.synchronizedList()가 있다.
+
+## Stack/Queue
+
+선입선출/후입선출 자료형
+ - Stack은 자바에서는 Vector 기반으로 구현되었다. 같은 단점을 가질 뿐만 아니라 LIFO에 적절하지 않은 구현을 가지게 되었다 -> ArrayDeque사용!
+ - Queue는 자바에서 LinkedList로 생성된다. : Java.util.ArrayDeque가 iterate가 빠를 수 있다!
+
+## PQ
+
+우선순위큐,우선순위가 높은 객체를 먼저 처리하게 된다.
+ 완전 이진트리 구조인 힙 구조를 통해 구현되므로 O(log n)의 복잡도를 가진다
+
+## Heap
+
+이진트리 중 완전이진트리(왼쪽 위부터 우선적으로 채우는 이진트리)를 의미한다
+
+구현
+최소힙/최대힙의 구현은 heapify를 통해 구현되며, 삭제시 꼬리노드를 올려 heapify,추가시 꼬리에 추가하고 heapify한다.
+heapify는 상위 노드로부터 하위 노드로 변경에 따라 전파되는 재귀|반복으로 구현된다.
+
+## Deque
+
+양방향 큐, ArrayDeque는 크기가 조정되는 배열 형태의 Deque이다. (kotlin.collections.ArrayDeque)
+
+## Set
+
+값을 하나씩만 저장하는 자료구조
+
+**Hashset**
+ - hash를 기반하여 contains()요소확인을 빠르게 지원하는 자료구조
+ - 자료 삽입 순서를 보장하지 않아 index를 지원하지 않는다!
+ - 자바에서는 HashMap을 기반으로 구현되었다.
+
+**LinkedHashSet**
+ - 데이터의 순서를 유지하는 셋, index 사용 가능(인덱스 접근시 Linked때문에 O(n)도 가능)
+
+## SortedSet
+
+값을 하나씩만 + 정렬하여 사용 가능한 Set
+
+**TreeSet**
+ - Tree에 기반하여 O(log n)레벨의 접근,추가,제거를 보인다 contains()는 O(n)
+ - 자바에서 TreeMap을 기반으로 구현되었다.
+ - 코틀린에서 SortedSet의 구현체이다.
+
+## Map
+
+key-value 매핑을 지원하는 자료구조, Associative Array라고도 함
+
+**HashMap** : 순서 없는 Hash 기반 맵, HashTable과 달리 Null을 허용하고, Thread unsafe하다.
+**TreeMap** : Red Black Tree 기반 Map으로 SortedMap의 구현체이다. 오름차순으로 자동 정렬된다.
+ - RBTree : 완전 이진트리의 일종으로 self-balancing이 포함된다. O(log n)복잡도로 삽입,삭제,검색이 가능하며 최악의 경우에도 우수한 성능을 보인다.
+leaf가 NIL이고 black, leaf가 black, DFS하면 어디로 가든 black 개수 같음 : 최장 경로는 최단 거리의 두 배 이하
+**LinkedHashMap** : LL로 구현된 해쉬맵, 데이터의 순서가 보장되나 랜덤 접근에서 느릴 수 있다.
+
+#Kotlin
+
+코틀린은 Mutable/Immutable 기준으로 List,Set,Map 이 있음며 이중 Set과 List는 Collection을 상속함
+
+
+### Detail
+
+**BST(Binary Search Tree)** 부모와 left/right간의 대소관계가 정의되어 탐색이 가능한 트리, 보통 left child가 부모보다 작고,right가 큼
+**해시 테이블** : key 가 해시값에 의해 value arr 의 index로 매핑되는 구조. value arr의 capacity로 모듈레이션을 사용하기도 한다.
+해시 함수의 충돌 처리를 LL로 연결할 수도 있고, 이중 해시 등을 사용할 수도 있음(해시 충돌시 해싱횟수에 따라 새로운 해시값 찾기)
+자바에서는 LL로 해시충돌 처리하다가 TREE_THRESHOLD 를 넘어감면 이진 트리 형태로 바꾼다고 하네(Java 8기준)
+자바에서도 hashCode를 객체 인스턴스들에 대해 비교하는데, 동등성 판단에서 1차로 hashCode()로 검사하고, 2차로 equals()로 검사함
+배열,정수,스트링 애들은 값이 같으면 해시코드 같던데 LinkedList나 CustomClass는 프로퍼티 다 같아도 다르더라 해시코드 구현내용이 중요할듯 데이타클래스는 같대
+-> 그러면 hash에 넣을 객체가 데이터가 같을 때 같은 해시값을 갖기를 원한다면 hashCode도 오버라이딩 해줘야겠네
+
+래퍼 클래스가 아닌 Object는 어떻게 중복검사? : hashCode와 equals 오버라이딩!
